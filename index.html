@@ -16,19 +16,18 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
         body { background-color: var(--white); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* HEADER PROFESIONAL */
         header { width: 100%; padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; gap: 20px; font-size: 13px; }
         header a { color: rgba(0,0,0,0.87); text-decoration: none; }
         header a:hover { text-decoration: underline; }
         .icon-menu { color: var(--text-sub); font-size: 20px; cursor: pointer; }
         .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--siker-gradient); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
 
-        /* BUSCADOR CENTRAL */
         .container { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 15vh; }
         
         .logo { 
             font-size: 92px; font-weight: 500; letter-spacing: -4px; margin-bottom: 30px;
             background: var(--siker-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            cursor: pointer;
         }
 
         .search-area { width: 90%; max-width: 584px; }
@@ -47,32 +46,28 @@
         }
         button:hover { border: 1px solid #dadce0; box-shadow: 0 1px 1px rgba(0,0,0,0.1); color: #202124; }
 
-        /* PANEL DE RESULTADOS (MODO ACTIVO) */
         .results-view .container { padding-top: 20px; align-items: flex-start; padding-left: 5%; }
         .results-view .logo { font-size: 24px; letter-spacing: -1px; position: absolute; top: 25px; left: 30px; }
         .results-view .search-area { margin-left: 130px; margin-top: 5px; }
         .results-view .btns { display: none; }
         
-        /* PESTAÑAS TIPO GOOGLE */
         .tabs { display: none; width: 100%; border-bottom: 1px solid #ebebeb; margin-top: 20px; padding-left: 165px; }
         .results-view .tabs { display: flex; gap: 20px; }
         .tab { padding: 12px 0; color: #70757a; font-size: 14px; cursor: pointer; position: relative; }
         .tab.active { color: #1a73e8; }
         .tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #1a73e8; }
 
-        /* RESULTADOS REALES DEL MOTOR */
         #results-list { width: 100%; max-width: 650px; margin-left: 165px; margin-top: 20px; display: none; }
         .result-item { margin-bottom: 30px; }
         .result-item a { color: #1a0dab; font-size: 20px; text-decoration: none; }
         .result-item a:hover { text-decoration: underline; }
         .result-item p { color: #4d5156; font-size: 14px; line-height: 1.58; margin-top: 5px; }
 
-        /* FOOTER */
         footer { background: #f2f2f2; border-top: 1px solid #e4e4e4; padding: 15px 30px; color: #70757a; font-size: 14px; margin-top: auto; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body id="body">
 
     <header>
         <a href="#">Motor ARM</a>
@@ -82,7 +77,7 @@
     </header>
 
     <div class="container" id="mainContainer">
-        <div class="logo">SIKER</div>
+        <div class="logo" onclick="window.location.reload()">SIKER</div>
 
         <div class="search-area">
             <div class="search-bar">
@@ -100,11 +95,10 @@
             <div class="tab active">Todo</div>
             <div class="tab">ARM Binarios</div>
             <div class="tab">Ciencia</div>
-            <div class="tab">Deep Web</div>
+            <div class="tab">Resultados Reales</div>
         </div>
 
-        <div id="results-list">
-            </div>
+        <div id="results-list"></div>
     </div>
 
     <footer>
@@ -112,24 +106,53 @@
     </footer>
 
     <script>
-        function ejecutarMotor() {
-            const query = document.getElementById('q').value;
+        async function ejecutarMotor() {
+            const query = document.getElementById('q').value.toLowerCase();
             if(!query) return;
 
-            // Cambiar a vista de resultados profesional
             document.body.classList.add('results-view');
-            document.getElementById('results-list').style.display = 'block';
-            
-            // CONEXIÓN REAL: Inyectar resultados basados en la base de datos
-            // Aquí el JS busca en el archivo que tu motor generó
             const resultsArea = document.getElementById('results-list');
-            resultsArea.innerHTML = `
-                <div class="result-item">
-                    <a href="#">Resultado del motor binario para: ${query}</a>
-                    <p>Datos extraídos de mi_google.db mediante la función ARM 21-30 (Filtro de Contenido). 
-                    El motor ha procesado esta consulta en el Redmi 9C consumiendo solo bytes.</p>
-                </div>
-            `;
+            resultsArea.style.display = 'block';
+            resultsArea.innerHTML = "<p style='color: #70757a;'>Conectando con el motor ARM en el Redmi 9C...</p>";
+
+            try {
+                // INTENTA LEER EL ARCHIVO QUE TU MOTOR SUBIRÁ
+                const respuesta = await fetch('resultados.json');
+                if (!respuesta.ok) throw new Error('No hay datos');
+                
+                const datos = await respuesta.json();
+                
+                // FILTRA POR LA BÚSQUEDA
+                const filtrados = datos.filter(item => 
+                    item.titulo.toLowerCase().includes(query) || 
+                    item.descripcion.toLowerCase().includes(query)
+                );
+
+                if(filtrados.length > 0) {
+                    resultsArea.innerHTML = filtrados.map(res => `
+                        <div class="result-item">
+                            <a href="${res.url}" target="_blank">${res.titulo}</a>
+                            <p>${res.descripcion}</p>
+                            <small style="color:var(--siker-green)">Fuente: mi_google.db (Función ARM Binaria)</small>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsArea.innerHTML = `
+                        <div class="result-item">
+                            <p>No se encontraron coincidencias para <b>${query}</b> en la base de datos local.</p>
+                            <p style="font-size: 12px; color: gray;">Asegúrate de que el motor en Termux haya indexado esta información.</p>
+                        </div>`;
+                }
+            } catch (e) {
+                // SI NO EXISTE EL ARCHIVO JSON TODAVÍA, MUESTRA ESTO:
+                resultsArea.innerHTML = `
+                    <div class="result-item">
+                        <a href="#">Buscador en modo espera</a>
+                        <p>El motor SIKER está activo pero el archivo <b>resultados.json</b> no se ha detectado en el servidor.</p>
+                        <p style="color: #d93025;">Error técnico: Esperando sincronización desde Termux (Redmi 9C).</p>
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
