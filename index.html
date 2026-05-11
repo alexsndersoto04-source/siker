@@ -1,28 +1,35 @@
-// ESTA ES LA CONEXIÓN REAL AL MOTOR SIKER EN TU TELÉFONO
-const URL_MOTOR = "https://fb15f4c2210da72d-200-36-155-52.serveousercontent.com";
+<script>
+    // Tu conexión real actualizada hoy
+    const URL_MOTOR = "https://75579d75115df41b-200-36-155-52.serveousercontent.com";
 
-async function verHistorialReal() {
-    toggleSideMenu(); // Cerramos el menú lateral
-    const status = document.getElementById('status-text');
-    status.innerText = "Consultando mi_google.db en el Redmi 9C...";
-
-    try {
-        // Le pedimos los datos al servidor Python que tienes corriendo
-        const respuesta = await fetch(`${URL_MOTOR}/historial`);
-        const datos = await respuesta.json();
-        
-        if (datos.historial) {
-            alert("HISTORIAL REAL:\n" + datos.historial.map(d => "- " + d).join("\n"));
-        } else {
-            alert("Conectado, pero el historial está vacío o hay un error de tabla.");
+    async function verHistorialReal() {
+        // Intentamos cerrar el menú si tienes la función toggleSideMenu
+        if (typeof toggleSideMenu === "function") {
+            toggleSideMenu();
         }
-    } catch (error) {
-        alert("ERROR: No se pudo contactar al motor. Revisa que 'python servidor_siker.py' esté corriendo en Termux.");
-        console.error(error);
-    } finally {
-        status.innerText = "Motor SIKER listo.";
-    }
-}
 
-// Actualiza tu menú lateral en el HTML para que llame a esta función:
-// <div class="menu-item" onclick="verHistorialReal()"><i class="fas fa-history"></i> Historial</div>
+        const status = document.getElementById('status-text');
+        if (status) status.innerText = "Consultando mi_google.db en el Redmi 9C...";
+
+        try {
+            // Llamada real al motor en Termux
+            const respuesta = await fetch(`${URL_MOTOR}/historial`);
+            
+            if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
+            
+            const datos = await respuesta.json();
+            
+            if (datos.historial && datos.historial.length > 0) {
+                const lista = datos.historial.map(d => "• " + d).join("\n");
+                alert("HISTORIAL REAL DESDE TU REDMI 9C:\n\n" + lista);
+            } else {
+                alert("Conectado al motor, pero el historial está vacío.");
+            }
+        } catch (error) {
+            alert("ERROR: No se pudo contactar al motor. \n1. Revisa que Termux tenga el servidor y el túnel activos.\n2. Asegúrate de haber dado clic en 'Continue to Site' en el link de Serveo.");
+            console.error("Error de conexión:", error);
+        } finally {
+            if (status) status.innerText = "Motor SIKER listo.";
+        }
+    }
+</script>
