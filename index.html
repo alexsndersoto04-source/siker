@@ -3,36 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIKER</title>
+    <title>SIKER - Motor Universal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: arial, sans-serif; background: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* HEADER */
+        /* HEADER Y MENÚ LATERAL */
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px; position: absolute; width: 100%; top: 0; z-index: 100; }
-        .menu-trigger { font-size: 20px; color: #5f6368; cursor: pointer; padding: 10px; }
-        .profile-circle { background: #008137; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .menu-trigger { font-size: 22px; color: #5f6368; cursor: pointer; padding: 10px; }
+        .profile-circle { background: #008137; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; margin-right: 10px;}
 
-        /* MENÚ LATERAL (Súper Menú de Google) */
-        .side-menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: 0.3s; z-index: 2000; padding-top: 60px; overflow-y: auto; }
+        .side-menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: 0.3s; z-index: 2000; padding-top: 20px; }
         .side-menu.active { left: 0; }
         .menu-section { padding: 15px 20px; border-bottom: 1px solid #eee; }
-        .menu-section-title { font-size: 12px; color: #70757a; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
         .menu-item { padding: 12px 0; display: flex; align-items: center; gap: 15px; color: #3c4043; cursor: pointer; font-size: 14px; }
-        .menu-item i { width: 20px; color: #5f6368; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; }
 
-        /* CONTENEDOR CENTRAL */
-        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; }
-        .logo { font-size: 70px; font-weight: bold; margin-bottom: 20px; background: linear-gradient(to right, #4285F4, #34A853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* CONTENEDOR CENTRALIZADO */
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; text-align: center; }
+        .logo { font-size: 75px; font-weight: bold; margin-bottom: 25px; background: linear-gradient(to right, #4285F4, #34A853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.1)); }
         
         .search-box { width: 100%; max-width: 584px; position: relative; }
-        .search-input { width: 100%; height: 45px; border: 1px solid #dfe1e5; border-radius: 24px; padding: 0 45px; font-size: 16px; outline: none; }
-        .fa-search { position: absolute; left: 15px; top: 15px; color: #9aa0a6; }
+        .search-input { width: 100%; height: 48px; border: 1px solid #dfe1e5; border-radius: 24px; padding: 0 50px; font-size: 16px; outline: none; box-shadow: none; transition: 0.2s; }
+        .search-input:focus { border-color: transparent; box-shadow: 0 1px 6px rgba(32,33,36,0.28); }
+        .fa-search { position: absolute; left: 18px; top: 16px; color: #9aa0a6; }
 
-        .tabs { display: flex; gap: 15px; margin-top: 20px; border-bottom: 1px solid #eee; width: 100%; justify-content: center; }
-        .tab { padding: 10px; font-size: 13px; color: #5f6368; cursor: pointer; }
+        .tabs { display: flex; gap: 15px; margin-top: 25px; border-bottom: 1px solid #eee; width: 100%; justify-content: center; max-width: 584px; }
+        .tab { padding: 10px; font-size: 14px; color: #5f6368; cursor: pointer; border-bottom: 3px solid transparent; }
         .tab.active { color: #1a73e8; border-bottom: 3px solid #1a73e8; }
     </style>
 </head>
@@ -47,21 +45,12 @@
 
     <div class="side-menu" id="side-menu">
         <div class="menu-section">
-            <div class="menu-item"><i class="fas fa-home"></i> Inicio</div>
-            <div class="menu-item"><i class="fas fa-history"></i> Historial de búsqueda</div>
+            <div class="menu-item" onclick="location.reload()"><i class="fas fa-home"></i> Inicio</div>
+            <div class="menu-item" onclick="alert('Conectando a mi_google.db...')"><i class="fas fa-history"></i> Historial</div>
         </div>
         <div class="menu-section">
-            <div class="menu-section-title">Configuración y Privacidad</div>
-            <div class="menu-item"><i class="fas fa-user-shield"></i> Privacidad y seguridad</div>
-            <div class="menu-item"><i class="fas fa-cog"></i> Configuración de búsqueda</div>
-            <div class="menu-item"><i class="fas fa-language"></i> Idiomas</div>
-            <div class="menu-item"><i class="fas fa-lock"></i> Búsqueda segura</div>
-        </div>
-        <div class="menu-section">
-            <div class="menu-section-title">Herramientas Avanzadas</div>
-            <div class="menu-item"><i class="fas fa-sliders-h"></i> Búsqueda avanzada</div>
-            <div class="menu-item"><i class="fas fa-database"></i> Gestión de datos</div>
-            <div class="menu-item"><i class="fas fa-question-circle"></i> Ayuda y Soporte</div>
+            <div class="menu-item" onclick="alert('Activando SIKER-Shield...')"><i class="fas fa-user-shield"></i> Privacidad</div>
+            <div class="menu-item" onclick="alert('Cargando Idiomas...')"><i class="fas fa-language"></i> Idiomas</div>
         </div>
     </div>
 
@@ -69,14 +58,14 @@
         <div class="logo">SIKER</div>
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" class="search-input" placeholder="Buscar en SIKER o escribir una URL" onkeypress="if(event.key==='Enter') window.location.href='https://www.google.com/search?q='+this.value">
+            <input type="text" id="engine-query" class="search-input" placeholder="Busca lo que sea..." onkeypress="conectarMotorUniversal(event)">
         </div>
         <div class="tabs">
             <div class="tab active">Todo</div>
             <div class="tab">Imágenes</div>
             <div class="tab">Herramientas</div>
         </div>
-        <p style="margin-top:20px; font-size:12px; color:#70757a;">Procesando resultados con motor ARM...</p>
+        <p id="status-text" style="margin-top:20px; font-size:12px; color:#70757a;">Motor SIKER listo. Procesando vía ARM.</p>
     </div>
 
     <script>
@@ -85,6 +74,20 @@
             const overlay = document.getElementById('overlay');
             menu.classList.toggle('active');
             overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+        }
+
+        // FUNCIÓN QUE HACE QUE BUSQUE "LO QUE SEA"
+        function conectarMotorUniversal(e) {
+            if (e.key === 'Enter') {
+                const query = document.getElementById('engine-query').value;
+                if (query.trim() === "") return;
+
+                document.getElementById('status-text').innerText = "Sincronizando con la red mundial...";
+                
+                // Redirección inmediata a resultados reales
+                // Esto hace que tu buscador sea funcional al 100% ahora mismo
+                window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1`;
+            }
         }
     </script>
 </body>
