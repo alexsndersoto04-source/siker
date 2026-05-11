@@ -66,20 +66,25 @@
     <div id="status-text">Motor SIKER listo.</div>
 
     <script>
-        // TU CONEXIÓN REAL ACTUALIZADA
-        const URL_MOTOR = "https://75579d75115df41b-200-36-155-52.serveousercontent.com";
+        // NUEVA DIRECCIÓN INTEGRADA (224ead6bb2e8ceab)
+        const URL_MOTOR = "https://224ead6bb2e8ceab-200-36-155-52.serveousercontent.com";
 
         function toggleSideMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
         }
 
         async function verHistorialReal() {
-            toggleSideMenu(); // Cerramos el menú
+            // Verificamos si el menú está abierto antes de intentar cerrarlo
+            const sideMenu = document.getElementById('sideMenu');
+            if (sideMenu.classList.contains('active')) {
+                toggleSideMenu();
+            }
+
             const status = document.getElementById('status-text');
             status.innerText = "Consultando mi_google.db en el Redmi 9C...";
 
             try {
-                // Petición al servidor Python en Termux
+                // Petición al servidor Python en Termux usando la nueva URL
                 const respuesta = await fetch(`${URL_MOTOR}/historial`);
                 
                 if (!respuesta.ok) throw new Error("No se pudo conectar");
@@ -92,7 +97,7 @@
                     alert("Motor conectado, pero el historial está vacío.");
                 }
             } catch (error) {
-                alert("ERROR: No se pudo contactar al motor.\n1. Revisa que 'python servidor_siker.py' y el túnel SSH estén corriendo.\n2. Asegúrate de dar clic en 'Continue to Site' en el link de Serveo.");
+                alert("ERROR DE CONEXIÓN:\n\n1. Revisa que Termux tenga el servidor y el túnel activos.\n2. Asegúrate de dar clic en 'Continue to Site' en el link de Serveo en una pestaña aparte.");
                 console.error(error);
             } finally {
                 status.innerText = "Motor SIKER listo.";
